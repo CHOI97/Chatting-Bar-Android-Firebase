@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 상단바 -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:id="@+id/Tool_Bar"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:background="@color/HeaderColor"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!--        알림함-->
+
+        <ImageButton
+            android:id="@+id/alarm_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_alarm" />
+
+        <!--        앱 타이틀-->
+        <TextView
+            android:id="@+id/App_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅마차"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.517" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--채팅 기록 뷰-->
+
+    <!--    바텀바-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ChatLog_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="605dp" />
+
+    <LinearLayout
+        android:id="@+id/Bottom_Bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <!--채팅기록 버튼-->
+
+        <Button
+            android:id="@+id/chattingList_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_chat_log_on"
+            android:text="기록"
+            android:textColor="@color/HeaderColor"
+            android:textStyle="bold" />
+
+        <!--홈 버튼-->
+
+        <Button
+            android:id="@+id/home_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_home_off"
+            android:text="홈"
+            android:textStyle="bold" />
+
+        <!--검색 버튼 -->
+
+        <Button
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawableTop="@drawable/ic_search"
+            android:text="검색"
+            android:textStyle="bold"/>
+
+
+        <!--        설정버튼-->
+        <Button
+            android:id="@+id/setting_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawableTop="@drawable/ic_settings"
+            android:text="설정"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+</LinearLayout>

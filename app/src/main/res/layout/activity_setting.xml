@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 상단바 -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:id="@+id/Tool_Bar"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:background="@color/HeaderColor"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!--        알림함-->
+
+        <ImageButton
+            android:id="@+id/alarm_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_alarm" />
+
+        <!--        앱 타이틀-->
+        <TextView
+            android:id="@+id/App_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅마차"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.517" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 메인 화면 -->
+
+    <LinearLayout
+        android:id="@+id/settingList"
+        android:layout_width="match_parent"
+        android:layout_height="605dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+<!--        회원정보 및 변경-->
+
+        <LinearLayout
+            android:id="@+id/userInform"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/userProfileImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    app:srcCompat="@drawable/ic_profileimg" />
+
+                <Button
+                    android:id="@+id/editImg_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:background="@drawable/round_rect_fill"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="프로필 사진변경"
+                    android:textSize="10dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/email_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="test123@mju.ac.kr"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/Nickname_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="테스트 닉네임" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
+
+            <TextView
+
+                android:id="@+id/subscriberList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:text="구독자 목록"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/editsubscriber_button"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/round_rect_fill"
+                android:text="편집"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!--        구분선-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/light_gray"/>
+
+<!--        관심주제설정-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
+
+            <TextView
+
+                android:id="@+id/tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="관심주제"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="15dp"/>
+
+            <Button
+                android:id="@+id/editTag_button"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:background="@drawable/round_rect_fill"
+                android:text="편집"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <!--        구분선-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/light_gray"/>
+
+<!--        비밀번호 변경-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/editPW_button">
+
+            <TextView
+                android:id="@+id/editPW_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="비밀번호 변경"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_margin="15dp"/>
+        </LinearLayout>
+
+
+        <!--        구분선-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/light_gray"/>
+
+<!--        구독 알림 설정 스위치-->
+<androidx.appcompat.widget.SwitchCompat
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:textColor="@color/black"
+    android:textSize="20dp"
+    android:layout_margin="15dp"
+    android:text="구독 알림 ON/OFF                                 "/>
+
+
+        <!--        구분선-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/light_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/logout_button"
+            >
+            <TextView
+                android:id="@+id/logout_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="로그아웃"
+               android:textSize="20dp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_margin="15dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--    바텀바-->
+
+    <LinearLayout
+        android:id="@+id/Bottom_Bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <!--채팅기록 버튼-->
+
+        <Button
+            android:id="@+id/chattingList_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_chat_log"
+            android:text="기록"
+            android:textStyle="bold" />
+
+        <!--홈 버튼-->
+
+        <Button
+            android:id="@+id/home_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_home_off"
+            android:text="홈"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <!--검색 버튼 -->
+
+        <Button
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawableTop="@drawable/ic_search"
+            android:text="검색"
+            android:textStyle="bold"/>
+
+
+        <!--        설정버튼-->
+        <Button
+            android:id="@+id/on_setting_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawableTop="@drawable/ic_settings_on"
+            android:text="설정"
+            android:textStyle="bold"
+            android:textColor="@color/HeaderColor"/>
+    </LinearLayout>
+
+</LinearLayout>

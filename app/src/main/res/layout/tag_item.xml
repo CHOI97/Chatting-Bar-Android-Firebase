@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="90dp"
+    android:layout_height="32dp"
+    android:orientation="vertical"
+    android:layout_marginBottom="10dp"
+    android:id="@+id/tag_select_btn"
+    >
+
+    <TextView
+        android:id="@+id/tag_name_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/round_rect_no_select_tag"
+        android:padding="6dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="#volunteering"
+        android:layout_marginRight="2dp"/>
+</LinearLayout>
