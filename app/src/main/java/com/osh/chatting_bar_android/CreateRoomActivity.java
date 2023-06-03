@@ -37,6 +37,7 @@ import retrofit2.Response;
 public class CreateRoomActivity extends AppCompatActivity {
     SharedPreferences pref;
     private String startTime;
+    private int startH, startM;
     private String durationtime;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,8 @@ public class CreateRoomActivity extends AppCompatActivity {
                             calenderInstance.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             calenderInstance.set(Calendar.MINUTE, minute);
                             start_time.setText(hourOfDay + " : "+ minute);
+                            startH = hourOfDay;
+                            startM = minute;
                             startTime = hourOfDay + ":" + minute;
                         }
                     }
@@ -92,7 +95,9 @@ public class CreateRoomActivity extends AppCompatActivity {
                             calenderInstance.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             calenderInstance.set(Calendar.MINUTE, minute);
                             operating_time.setText(hourOfDay + " : "+ minute);
-                            durationtime = hourOfDay + ":" + minute;
+                            int durationH = startH + hourOfDay;
+                            int durationM = startM + minute;
+                            durationtime = durationH + ":" + durationM;
                         }
                     }
                 };
