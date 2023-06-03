@@ -26,6 +26,13 @@ public class ChatRoomInformation {
         return desc;
     }
 
+    @SerializedName("hostId")
+    private Long hostId;
+
+    public Long getHostId() {
+        return hostId;
+    }
+
     @SerializedName("hostName")
     private String hostName;
 
@@ -61,6 +68,13 @@ public class ChatRoomInformation {
         return password;
     }
 
+    @SerializedName("status")
+    private Status status;
+
+    public Status getStatus() {
+        return status;
+    }
+
     @SerializedName("private")
     private Boolean private_;
 
@@ -80,6 +94,6 @@ public class ChatRoomInformation {
     public String toString()
     {
         return "id: " + id + "\nname: " + name + "\ndesc: " + desc+ "\nhostName: " + hostName + "\nparticipant" + participant + "\ntime" + time + "\ncategories" + categories+"\npassword" + password
-                + "\nprivate: " + private_ + "\n full: " + full + "\n------------------------------------------";
+                + "\nprivate: " + private_ + "\n full: " + full + "status: "+ status+ "\n------------------------------------------\n";
     }
 }

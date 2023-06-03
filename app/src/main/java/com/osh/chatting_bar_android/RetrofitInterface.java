@@ -70,6 +70,20 @@ public interface RetrofitInterface {
 
     @GET("/api/chatroom/search/{search}")
     Call<SearchResponse> getSearchRoom(@Path("search") String search);
+
+    @POST("api/users/follow/{id}")
+    Call<BaseResponse> followStart(@Path("id") String id);
+
+    @DELETE("api/users/follow/{id}")
+    Call<BaseResponse> followEnd(@Path("id") String id);
+
+    @GET("api/users/following")
+    Call<FollowingResponse> getFollowInfo();
+
+    @GET("api/users/following/{id}")
+    Call<FollowingResponse> getFollowerByID(@Path("id") String id);
+
+
 }
 
 //왜인지 @Field 안돌아가서 다 @Body로 하기위함....string은 사소해서 여기에 클래스 선언함
