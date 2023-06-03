@@ -1,6 +1,9 @@
 package com.osh.chatting_bar_android;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecyclerViewAdapter.MyViewHolder>{
     private List<String> tagList;
     private Context context;
+    private List<String> userTagList;
     public EditTagRecyclerViewAdapter(Context context, List<String> tagList) {
 
         this.tagList = tagList;
@@ -48,12 +54,23 @@ public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecy
             tagBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Drawable currentBackground = textView.getBackground();
+                    int noSelectTagResource = R.drawable.round_rect_no_select_tag;
+                    int selectTagResource = R.drawable.round_rect_select_tag;
 
-//                    if (textView.getBackground().equals(R.drawable.round_rect_no_select_tag)) {
-                        textView.setBackgroundResource(R.drawable.round_rect_select_tag);
-//                    }
+                    Drawable noSelectTagDrawable = ContextCompat.getDrawable(context, noSelectTagResource);
+
+                    if (currentBackground != null && currentBackground.getConstantState().equals(noSelectTagDrawable.getConstantState())) {
+                        textView.setBackgroundResource(selectTagResource);
+                    }
+                    else{
+                        textView.setBackgroundResource(noSelectTagResource);
+                    }
                 }
             });
+
+// Helper method to get resource name from drawable
+
 //            아이템 클릭 이벤트 처리
 //            LinearLayout recentBtn = itemView.findViewById(R.id.recent_button);
 //            recentBtn.setOnClickListener(new View.OnClickListener() {
