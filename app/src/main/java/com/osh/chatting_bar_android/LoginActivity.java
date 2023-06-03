@@ -96,14 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        //구글 로그인 버튼
-        Button google = findViewById(R.id.google_enter);
-        google.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //구글 로그인 액션
-            }
-        });
+
         //비번찾기 버튼
         Button find = findViewById(R.id.PW_find);
         find.setOnClickListener(new View.OnClickListener() {
