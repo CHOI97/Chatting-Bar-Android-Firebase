@@ -150,6 +150,7 @@ public class SettingActivity extends AppCompatActivity {
                                 Log.d("test", response.body().toString() + ", code: " + response.code());
                                 editor.clear();
                                 editor.apply();
+                                User.getInstance().logout();
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 MainActivity.mainActivity.finish();
                                 startActivity(intent);

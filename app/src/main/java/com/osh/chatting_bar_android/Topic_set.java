@@ -54,6 +54,7 @@ public class Topic_set extends AppCompatActivity {
                             Log.d("test", response.body().toString() + ", code: " + response.code());
                             editor.clear();
                             editor.apply();
+                            User.getInstance().logout();
                             finish();
                         } else {
                             try {
