@@ -20,10 +20,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.osh.chatting_bar_android.data_model.ChatRoomInformation;
 import com.osh.chatting_bar_android.data_model.ChatRoomResponse;
 import com.osh.chatting_bar_android.data_model.SearchResponse;
+import com.osh.chatting_bar_android.data_model.Status;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,7 +57,11 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ChatRoomResponse> call, Response<ChatRoomResponse> response) {
                 if (response.isSuccessful()) {
 //                    Log.d("test", "최신순\n"+response.body().toString() + ", code: " + response.code());
-                    latestInfo = response.body().getInformation();
+                    latestInfo = new ArrayList<>();
+                    for (ChatRoomInformation info :response.body().getInformation()) {
+                        if (info.getStatus() == Status.ACTIVE)
+                            latestInfo.add(info);
+                    }
                     InitRoomList(latestInfo, findViewById(R.id.newest_recyclerView));
 
 //                    InitRoomList(latesetinfo, findViewById(R.id.subscribe_recyclerView));
@@ -84,7 +91,11 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<ChatRoomResponse> call, Response<ChatRoomResponse> response) {
                 if (response.isSuccessful()) {
 //                    Log.d("test", "추천순\n"+response.body().toString() + ", code: " + response.code());
-                    latestInfo = response.body().getInformation();
+                    latestInfo = new ArrayList<>();
+                    for (ChatRoomInformation info :response.body().getInformation()) {
+                        if (info.getStatus() == Status.ACTIVE)
+                            latestInfo.add(info);
+                    }
                     InitRoomList(latestInfo, findViewById(R.id.recommend_recyclerView));
                 } else {
                     try {
@@ -115,7 +126,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
                     if (response.isSuccessful()) {
 //                        Log.d("test", "검색\n"+response.body().toString() + ", code: " + response.code());
-                        latestInfo = response.body().getInformation().getInformation();
+                        latestInfo = new ArrayList<>();
+                        for (ChatRoomInformation info :response.body().getInformation().getInformation()) {
+                            if (info.getStatus() == Status.ACTIVE)
+                                latestInfo.add(info);
+                        }
                         TextView textView = findViewById(R.id.searchWord_text);
                         textView.setText("\""+str+"\"");
                         showSearchResult();

@@ -50,7 +50,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/round_rect"
-            android:text="구독"
+            android:text="취소"
             android:textStyle="bold" />
 
 </LinearLayout>
