@@ -2,6 +2,8 @@ package com.osh.chatting_bar_android;
 
 import com.osh.chatting_bar_android.data_model.*;
 
+import java.util.EnumSet;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -74,7 +76,7 @@ public interface RetrofitInterface {
     @POST("api/users/follow/{id}")
     Call<BaseResponse> followStart(@Path("id") String id);
 
-    @DELETE("api/users/follow/{id}")
+    @PATCH("api/users/follow/{id}")
     Call<BaseResponse> followEnd(@Path("id") String id);
 
     @GET("api/users/following")
@@ -83,8 +85,24 @@ public interface RetrofitInterface {
     @GET("api/users/following/{id}")
     Call<FollowingResponse> getFollowerByID(@Path("id") String id);
 
+//    @FormUrlEncoded
+//    @PATCH("/api/users/categories")
+//    Call<BaseResponse> setCategories(@Field(value = "Categories", encoded = true) String categories);
+
+    //    @FormUrlEncoded
+//    @PATCH("/api/users/categories")
+//    Call<BaseResponse> setCategories(@Field("Categories")EnumSet<Categories> categories);
     @PATCH("/api/users/categories")
-    Call<BaseResponse> setCategories(@Body CategorieRequest categorieRequest);
+    Call<BaseResponse> setCategories(@Body EnumSet<Categories> Categories);
+
+    @POST("/api/users/requestVeri")
+    Call<BaseResponse> requestVeri(@Body stringRequest stringRequest);
+
+    @POST("/api/users/verifyCode")
+    Call<BaseResponse> checkVeriCode(@Body CodeRequest codeRequest);
+
+    @GET("/api/chatroom/records")
+    Call<ChatRoomResponse> getRoomRecords();
 }
 
 //왜인지 @Field 안돌아가서 다 @Body로 하기위함....string은 사소해서 여기에 클래스 선언함

@@ -43,32 +43,10 @@ public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecy
     public EditTagRecyclerViewAdapter(Context context, List<Categories> tagList) {
         this.tagList = tagList;
         this.context = context;
-        userTagList = EnumSet.noneOf(Categories.class);
-        Call<UserResponse> call = RetrofitService.getApiTokenService().getUserInfo();
-        call.enqueue(new Callback<UserResponse>() {
-            //콜백 받는 부분
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                if (response.isSuccessful()) {
-                    Log.d("test", response.body().toString() + ", code: " + response.code());
-                    userTagList = response.body().getInformation().getCategories();
-                } else {
-                    try {
-                        Log.d("test", "유저정보 불러오기"+response.errorBody().string() + ", code: " + response.code());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(context, "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
-                Log.d("test", "실패: " + t.getMessage());
-
-                Toast.makeText(context, "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (User.getInstance().getCategories() != null)
+            userTagList = User.getInstance().getCategories();
+        else
+            userTagList = EnumSet.noneOf(Categories.class);
     }
     @NonNull
     @Override
@@ -78,8 +56,9 @@ public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecy
 
     @Override
     public void onBindViewHolder(@NonNull EditTagRecyclerViewAdapter.MyViewHolder holder, int position) {
-        holder.textView.setText("#"+ tagList.get(position).toString());
-        if (userTagList.contains(tagList.get(position))) {
+        holder.textView.setText("#"+ tagList.get(position).getStr());
+        if (userTagList.contains(Categories.valueOfStr(tagList.get(position).getStr())))
+        {
             holder.textView.setBackgroundResource(R.drawable.round_rect_select_tag);
         }
     }
@@ -97,6 +76,7 @@ public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecy
             textView = itemView.findViewById(R.id.tag_name_text);
             LinearLayout tagBtn = itemView.findViewById(R.id.tag_select_btn);
 
+
             tagBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -108,11 +88,11 @@ public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecy
 
                     if (currentBackground != null && currentBackground.getConstantState().equals(noSelectTagDrawable.getConstantState())) {
                         textView.setBackgroundResource(selectTagResource);
-                        userTagList.add(Categories.valueOf(textView.getText().toString().replaceAll("#", "")));
+                        userTagList.add(Categories.valueOfStr(textView.getText().toString().replaceAll("#", "")));
                     }
                     else{
                         textView.setBackgroundResource(noSelectTagResource);
-                        userTagList.remove(Categories.valueOf(textView.getText().toString().replaceAll("#", "")));
+                        userTagList.remove(Categories.valueOfStr(textView.getText().toString().replaceAll("#", "")));
                     }
                 }
             });
