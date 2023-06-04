@@ -18,10 +18,10 @@ import java.util.List;
 public class RoomMemberRecyclerViewAdapter extends RecyclerView.Adapter<RoomMemberRecyclerViewAdapter.MyViewHolder> {
     private List<String> MemberList;
     private Context context;
-    private boolean isHost;
+    private String userRole;
 
-    public RoomMemberRecyclerViewAdapter(Context context, List<String> MemberList, boolean isHost) {
-        this.isHost = isHost;
+    public RoomMemberRecyclerViewAdapter(Context context, List<String> MemberList, String userRole) {
+        this.userRole = userRole;
         this.MemberList = MemberList;
         this.context = context;
     }
@@ -51,23 +51,23 @@ public class RoomMemberRecyclerViewAdapter extends RecyclerView.Adapter<RoomMemb
             Button ban = itemView.findViewById(R.id.ban_button);
             Button chat_ban = itemView.findViewById(R.id.chatban_button);
             //방장이 아닌 경우 버튼 지우기
-            if (!isHost) {
+            if (userRole == "Guest") {
                 chat_ban.setVisibility(View.INVISIBLE);
                 ban.setVisibility(View.INVISIBLE);
             }
 
             //방장인 경우
-            else {
+            else if( userRole == "Host") {
                 ban.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        //강퇴 기능
                     }
                 });
                 chat_ban.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        //얼리기 기능
                     }
                 });
             }
