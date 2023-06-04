@@ -2,6 +2,8 @@ package com.osh.chatting_bar_android;
 
 import com.osh.chatting_bar_android.data_model.*;
 
+import java.util.EnumSet;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -83,8 +85,15 @@ public interface RetrofitInterface {
     @GET("api/users/following/{id}")
     Call<FollowingResponse> getFollowerByID(@Path("id") String id);
 
+//    @FormUrlEncoded
+//    @PATCH("/api/users/categories")
+//    Call<BaseResponse> setCategories(@Field(value = "Categories", encoded = true) String categories);
+
+    //    @FormUrlEncoded
+//    @PATCH("/api/users/categories")
+//    Call<BaseResponse> setCategories(@Field("Categories")EnumSet<Categories> categories);
     @PATCH("/api/users/categories")
-    Call<BaseResponse> setCategories(@Body CategorieRequest categorieRequest);
+    Call<BaseResponse> setCategories(@Body EnumSet<Categories> Categories);
 
     @POST("/api/users/requestVeri")
     Call<BaseResponse> requestVeri(@Body stringRequest stringRequest);

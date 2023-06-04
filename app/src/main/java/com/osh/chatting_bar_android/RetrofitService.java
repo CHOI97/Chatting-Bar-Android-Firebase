@@ -57,6 +57,11 @@ public class RetrofitService {
                             Response newResponse = chain.proceed(newRequest);
                             Log.d("test", "intercept: " + newResponse.code());
                             return newResponse;
+                        } else if (response.code() == 500) {
+                            response.close();
+                            Request newRequest = chain.request().newBuilder().removeHeader("Content-Type").header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").header("Authorization", "Bearer "+User.getInstance().getPreferences().getString("AccessToken", "")).build();
+                            Response newResponse = chain.proceed(newRequest);
+                            return newResponse;
                         }
                         return response;
                     }

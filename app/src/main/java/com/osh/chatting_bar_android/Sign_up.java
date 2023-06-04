@@ -3,6 +3,7 @@ package com.osh.chatting_bar_android;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,8 +12,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.osh.chatting_bar_android.data_model.BaseResponse;
+import com.osh.chatting_bar_android.data_model.SignInRequest;
+import com.osh.chatting_bar_android.data_model.SignInResponse;
 import com.osh.chatting_bar_android.data_model.SignUpRequest;
+import com.osh.chatting_bar_android.data_model.UserResponse;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,10 +74,36 @@ public class Sign_up extends AppCompatActivity {
                         public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                             if (response.isSuccessful()) {
                                 Log.d("test", response.body().toString() +", code: "+ response.code());
-                                Intent intent = new Intent(getApplicationContext(), Topic_set.class);
-                                startActivity(intent);
+                                //회원가입 후 그 계정으로 로그인
+                                SignInRequest signInRequest = new SignInRequest(email_input.getText().toString(), pw_input.getText().toString());
+                                Call<SignInResponse> signIn = RetrofitService.getApiService().sign_in(signInRequest);
+                                signIn.enqueue(new Callback<SignInResponse>(){
+                                    //콜백 받는 부분
+                                    @Override
+                                    public void onResponse(Call<SignInResponse> call, Response<SignInResponse> response) {
+                                        if (response.isSuccessful()) {
+                                            Log.d("test", "로그인: " + response.body().toString() +", code: "+ response.code());
+                                            SharedPreferences.Editor editor = User.getInstance().getPreferences().edit();
+                                            editor.putString("AccessToken", response.body().getInformation().getAccessToken()).apply();
+                                            editor.putString("RefreshToken", response.body().getInformation().getRefreshToken()).apply();
 
-                                finish();
+                                            Intent intent = new Intent(getApplicationContext(), Topic_set.class);
+                                            startActivity(intent);
+
+                                            finish();
+                                        } else {
+                                            Log.d("test", "로그인: " + response.body() + ", code: "+ response.code());
+                                            Toast.makeText(getApplicationContext(), "없는 계정입니다", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<SignInResponse> call, Throwable t) {
+                                        Log.d("test", "실패: "+ t.getMessage());
+
+                                        Toast.makeText(getApplicationContext(), "네트워크 문제로 로그인에 실패했습니다", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             } else if (response.code() == 400)
                                 Toast.makeText(getApplicationContext(), "이미 사용하는 이메일입니다", Toast.LENGTH_SHORT).show();
                             else

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,13 +25,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Topic_set extends AppCompatActivity {
-
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
     private EditTagRecyclerViewAdapter EditTagRecyclerViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_set);
-
+        pref = User.getInstance().getPreferences();
+        editor = pref.edit();
         InitBtn();
         InitTagList();
     }
@@ -41,7 +44,34 @@ public class Topic_set extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                //관심주제 설정에서 뒤로나가면 로그인 화면 -> 로그아웃
+                Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new stringRequest(pref.getString("RefreshToken", "")));
+                call.enqueue(new Callback<BaseResponse>() {
+                    //콜백 받는 부분
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.isSuccessful()) {
+                            Log.d("test", response.body().toString() + ", code: " + response.code());
+                            editor.clear();
+                            editor.apply();
+                            finish();
+                        } else {
+                            try {
+                                Log.d("test", response.errorBody().string() + ", code: " + response.code());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(getApplicationContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        Log.d("test", "실패: " + t.getMessage());
+
+                        Toast.makeText(getApplicationContext(), "네트워크 문제로 로그아웃에 실패했습니다", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -49,7 +79,7 @@ public class Topic_set extends AppCompatActivity {
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<BaseResponse> call = RetrofitService.getApiTokenService().setCategories(new CategorieRequest(EditTagRecyclerViewAdapter.getUserTagList()));
+                Call<BaseResponse> call = RetrofitService.getApiTokenService().setCategories(EditTagRecyclerViewAdapter.getUserTagList());
                 call.enqueue(new Callback<BaseResponse>() {
                     //콜백 받는 부분
                     @Override

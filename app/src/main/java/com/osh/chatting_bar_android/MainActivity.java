@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                     if (response.isSuccessful()) {
-                        Log.d("test", response.body().toString() + ", code: " + response.code());
+                        Log.d("test", "유저정보"+response.body().toString() + ", code: " + response.code());
                         User.getInstance().setInformation(response.body().getInformation());
                     } else {
                         try {
