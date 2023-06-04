@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 
 import com.osh.chatting_bar_android.data_model.BaseResponse;
 import com.osh.chatting_bar_android.data_model.ChatRoomInformation;
+import com.osh.chatting_bar_android.data_model.FollowingResponse;
 import com.osh.chatting_bar_android.data_model.UserResponse;
 
 import java.io.IOException;
@@ -38,7 +39,37 @@ public class RoomDetailInfoPopupDialog extends Dialog {
     public RoomDetailInfoPopupDialog(@NonNull Context context, ChatRoomInformation information) {
         super(context);
         this.information = information;
+
+
+        Call<FollowingResponse> call = RetrofitService.getApiTokenService().getFollowerByID(information.getHostId().toString());
+        call.enqueue(new Callback<FollowingResponse>() {
+            //콜백 받는 부분
+            @Override
+            public void onResponse(Call<FollowingResponse> call, Response<FollowingResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.d("test", response.body().toString() + ", code: " + response.code());
+                    TextView followerNum = findViewById(R.id.textView13);
+                    followerNum.setText(response.body().getInformation().size() + "명");
+                } else {
+                    try {
+                        Log.d("test", response.errorBody().string() + ", code: " + response.code());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(context, "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FollowingResponse> call, Throwable t) {
+                Log.d("test", "실패: " + t.getMessage());
+
+                Toast.makeText(context, "네트워크 문제로 방 조회에 실패했습니다", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         setContentView(R.layout.popup_room_detail_inform);
+
         shutdownClick = findViewById(R.id.close_button);
         shutdownClick.setOnClickListener(new View.OnClickListener() {
 
@@ -47,6 +78,7 @@ public class RoomDetailInfoPopupDialog extends Dialog {
                 dismiss();
             }
         });
+
         completeClick = findViewById(R.id.complete_click);
         completeClick.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +116,40 @@ public class RoomDetailInfoPopupDialog extends Dialog {
                 });
             }
         });
+        Button followClick = findViewById(R.id.imageButton);
+        followClick.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //구독
+                Call<BaseResponse> call = RetrofitService.getApiTokenService().followStart(information.getHostId().toString());
+                call.enqueue(new Callback<BaseResponse>() {
+                    //콜백 받는 부분
+                    @Override
+                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        if (response.isSuccessful()) {
+                            Log.d("test", response.body().toString() + ", code: " + response.code());
+                            Toast.makeText(context, "구독을 했습니다", Toast.LENGTH_SHORT).show();
+                        } else {
+                            try {
+                                Log.d("test", response.errorBody().string() + ", code: " + response.code());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(context, "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        Log.d("test", "실패: " + t.getMessage());
+
+                        Toast.makeText(context, "네트워크 문제로 방 조회에 실패했습니다", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
 
         TextView timeText = findViewById(R.id.operating_time);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
@@ -119,5 +185,6 @@ public class RoomDetailInfoPopupDialog extends Dialog {
             else
                 tagViews.get(i).setVisibility(View.INVISIBLE);
         }
+
     }
 }

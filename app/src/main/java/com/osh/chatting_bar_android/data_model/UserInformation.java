@@ -2,6 +2,7 @@ package com.osh.chatting_bar_android.data_model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 public class UserInformation {
@@ -34,9 +35,9 @@ public class UserInformation {
     }
 
     @SerializedName("categories")
-    private Set<Categories> categories;
+    private EnumSet<Categories> categories;
 
-    public Set<Categories> getCategories() {
+    public EnumSet<Categories> getCategories() {
         return categories;
     }
 

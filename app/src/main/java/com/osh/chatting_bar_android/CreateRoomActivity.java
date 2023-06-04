@@ -4,6 +4,8 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +39,9 @@ import retrofit2.Response;
 public class CreateRoomActivity extends AppCompatActivity {
     SharedPreferences pref;
     private String startTime;
+    private int startH, startM;
     private String durationtime;
+    private EditTagPopupDialog editTagPopupDialog;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_room);
@@ -63,6 +67,8 @@ public class CreateRoomActivity extends AppCompatActivity {
                             calenderInstance.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             calenderInstance.set(Calendar.MINUTE, minute);
                             start_time.setText(hourOfDay + " : "+ minute);
+                            startH = hourOfDay;
+                            startM = minute;
                             startTime = hourOfDay + ":" + minute;
                         }
                     }
@@ -92,7 +98,9 @@ public class CreateRoomActivity extends AppCompatActivity {
                             calenderInstance.set(Calendar.HOUR_OF_DAY, hourOfDay);
                             calenderInstance.set(Calendar.MINUTE, minute);
                             operating_time.setText(hourOfDay + " : "+ minute);
-                            durationtime = hourOfDay + ":" + minute;
+                            int durationH = startH + hourOfDay;
+                            int durationM = startM + minute;
+                            durationtime = durationH + ":" + durationM;
                         }
                     }
                 };
@@ -102,6 +110,20 @@ public class CreateRoomActivity extends AppCompatActivity {
                 timePickerDialog.setTitle("운영시간");
                 Objects.requireNonNull(timePickerDialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
                 timePickerDialog.show();
+            }
+        });
+
+        //태그 설정
+        TextView tag_btn = findViewById(R.id.tagSet_rect);
+        tag_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTagPopupDialog = new EditTagPopupDialog(CreateRoomActivity.this);
+
+                //아래 두 줄 라운드 외곽
+                editTagPopupDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                editTagPopupDialog.show();
+
             }
         });
 

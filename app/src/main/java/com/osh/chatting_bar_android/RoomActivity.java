@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,13 +32,15 @@ import retrofit2.Response;
 
 public class RoomActivity extends AppCompatActivity {
     private MessagesRecyclerViewAdapter MessagesRecyclerViewAdapter;
-
+    private RoomMemberRecyclerViewAdapter RoomMemberRecyclerViewAdapter;
     ChatRoomInformation information;
+    Boolean isHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+        isHost = Boolean.TRUE;
 
         Intent intent = getIntent();
         if (intent.getLongExtra("RoomID", 0) != 0) {
@@ -72,6 +75,7 @@ public class RoomActivity extends AppCompatActivity {
         InitChatting();
     }
 
+//    채팅 리사이클러뷰 불러오기
     protected void InitChatting(){
         RecyclerView recyclerView = findViewById(R.id.chatting_recyclerView);
 
@@ -79,7 +83,16 @@ public class RoomActivity extends AppCompatActivity {
         recyclerView.setAdapter(MessagesRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
+    //방 참여자 불러오기
+    protected void InitMemberList(){
+
+        RecyclerView recyclerView = findViewById(R.id.member_recyclerView);
+        RoomMemberRecyclerViewAdapter = new RoomMemberRecyclerViewAdapter(this, getMemberList(),isHost);
+        recyclerView.setAdapter(RoomMemberRecyclerViewAdapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     protected void InitBtn(){
@@ -123,17 +136,57 @@ public class RoomActivity extends AppCompatActivity {
         TextView RoomTitle = findViewById(R.id.room_name);
         RoomTitle.setText("test");
 
-        Button alarm_btn = findViewById(R.id.menu_button);
+//      메뉴 버튼
+        Button menu_btn = findViewById(R.id.menu_button);
         NavigationView navigationView = findViewById(R.id.roomMenu_drawerLayout);
         navigationView.setVisibility(View.INVISIBLE);
-
-        alarm_btn.setOnClickListener(new View.OnClickListener() {
+        menu_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                InitMemberList();
-                navigationView.setVisibility(View.VISIBLE);
+              InitMemberList();
+              navigationView.setVisibility(View.VISIBLE);
             }
         });
+
+//        네비게이션뷰 닫기 버튼
+        Button menuExit_btn = findViewById(R.id.roomMenuExit_button);
+        menuExit_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                navigationView.setVisibility(View.INVISIBLE);
+            }
+        });
+
+//        네비게이션뷰 방나가기 버튼
+        LinearLayout roomExit = findViewById(R.id.room_exit_button);
+        roomExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        //네비게이션뷰 구독or 전체 얼리기 버튼
+        //방장일 때 구독 버튼 -> 전체 얼리기 버튼으로 변경
+        Button subscribeOrAllChatBan = findViewById(R.id.subscribeOrAllban_button);
+        if(isHost){
+            subscribeOrAllChatBan.setText("전체 얼리기");
+            subscribeOrAllChatBan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
+        //참여자일 경우 구독 버튼
+        else{
+            subscribeOrAllChatBan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
 
         //전송버튼
         Button send_button = findViewById(R.id.send_button);
@@ -154,7 +207,9 @@ public class RoomActivity extends AppCompatActivity {
     }
     private List<String> getMessageList() {
         return Arrays.asList("테스트 메세지 123", "테스트 메세지 456", "테스트 메세지 789", "장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지", "장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지");
-
+    }
+    private List<String> getMemberList(){
+        return Arrays.asList("배수호","배종찬","오시현","백계환","신초은");
     }
 
 }

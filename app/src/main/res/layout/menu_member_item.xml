@@ -7,14 +7,14 @@
         android:padding="20dp">
 
         <ImageView
-            android:id="@+id/ChatLogUserProfile_img"
+            android:id="@+id/UserProfile_img"
             android:src="@drawable/ic_profileimg"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="5dp"/>
 
         <TextView
-            android:id="@+id/ChatLogHost_nickname_text"
+            android:id="@+id/User_nickname_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
