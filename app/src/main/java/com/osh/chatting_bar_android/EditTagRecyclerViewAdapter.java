@@ -112,7 +112,7 @@ public class EditTagRecyclerViewAdapter extends RecyclerView.Adapter<EditTagRecy
                     }
                     else{
                         textView.setBackgroundResource(noSelectTagResource);
-                        userTagList.remove(Categories.valueOf(textView.getText().toString()));
+                        userTagList.remove(Categories.valueOf(textView.getText().toString().replaceAll("#", "")));
                     }
                 }
             });
