@@ -31,17 +31,26 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRe
             //상대 채팅의 경우
             case 1:
                 return new MessagesRecyclerViewAdapter.MyViewHolder(LayoutInflater.from(context).inflate(R.layout.anyone_message_item, parent, false));
+
+            case 2:
+                return new MessagesRecyclerViewAdapter.MyViewHolder(LayoutInflater.from(context).inflate(R.layout.system_message_item,parent, false));
         }
         return null;
+
     }
 
     @Override
     public int getItemViewType(int position){
-        if(position % 2 == 0){
+        int viewtype = position % 3;
+        if(viewtype == 2){
             return 0;
         }
-        else
+        else if(viewtype == 1) {
             return 1;
+        }
+        else{
+            return 2;
+        }
     }
 
     @Override

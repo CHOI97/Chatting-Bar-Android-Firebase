@@ -40,10 +40,12 @@ public class RoomActivity extends AppCompatActivity {
     Boolean isHost;
     private DatabaseReference mDatabase;
 
+    private String userRole;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+        userRole = "Host";
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -77,15 +79,47 @@ public class RoomActivity extends AppCompatActivity {
             });
         }
 
-        InitBtn();
         InitChatting();
+        InitMemberList();
+        InitBtn();
+        //방에 있는 유저 조회
+        // API /api/chatroom/{roomId}/users에서
+        // userNickname과 자신의 닉네임을 찾아 userRole을 비교
+        if(userRole == "Host") {
+            HostInit();
+        }
+        else {
+            GuestInit();
+        }
+    }
+
+    protected void HostInit(){
+            //구독 버튼 -> 전체 얼리기 버튼으로 변경
+            Button allChatBan_btn = findViewById(R.id.subscribeOrAllban_button);
+            allChatBan_btn.setText("전체 얼리기");
+            allChatBan_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //전체 얼리기 기능
+                }
+            });
+    }
+    protected void GuestInit(){
+        //
+        Button subscribe_btn = findViewById(R.id.subscribeOrAllban_button);
+        subscribe_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //구독 기능
+
+            }
+        });
     }
 
 //    채팅 리사이클러뷰 불러오기
     protected void InitChatting(){
 
         RecyclerView recyclerView = findViewById(R.id.chatting_recyclerView);
-
         MessagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(this, getMessageList());
         recyclerView.setAdapter(MessagesRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
@@ -95,9 +129,8 @@ public class RoomActivity extends AppCompatActivity {
 
     //방 참여자 불러오기
     protected void InitMemberList(){
-
         RecyclerView recyclerView = findViewById(R.id.member_recyclerView);
-        RoomMemberRecyclerViewAdapter = new RoomMemberRecyclerViewAdapter(this, getMemberList(),isHost);
+        RoomMemberRecyclerViewAdapter = new RoomMemberRecyclerViewAdapter(this, getMemberList(),userRole);
         recyclerView.setAdapter(RoomMemberRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -174,27 +207,7 @@ public class RoomActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //네비게이션뷰 구독or 전체 얼리기 버튼
-        //방장일 때 구독 버튼 -> 전체 얼리기 버튼으로 변경
-        Button subscribeOrAllChatBan = findViewById(R.id.subscribeOrAllban_button);
-        if(isHost){
-            subscribeOrAllChatBan.setText("전체 얼리기");
-            subscribeOrAllChatBan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                }
-            });
-        }
-        //참여자일 경우 구독 버튼
-        else{
-            subscribeOrAllChatBan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
 
         //전송버튼
         Button send_button = findViewById(R.id.send_button);

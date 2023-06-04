@@ -74,7 +74,7 @@ public interface RetrofitInterface {
     @POST("api/users/follow/{id}")
     Call<BaseResponse> followStart(@Path("id") String id);
 
-    @DELETE("api/users/follow/{id}")
+    @PATCH("api/users/follow/{id}")
     Call<BaseResponse> followEnd(@Path("id") String id);
 
     @GET("api/users/following")
@@ -85,6 +85,15 @@ public interface RetrofitInterface {
 
     @PATCH("/api/users/categories")
     Call<BaseResponse> setCategories(@Body CategorieRequest categorieRequest);
+
+    @POST("/api/users/requestVeri")
+    Call<BaseResponse> requestVeri(@Body stringRequest stringRequest);
+
+    @POST("/api/users/verifyCode")
+    Call<BaseResponse> checkVeriCode(@Body CodeRequest codeRequest);
+
+    @GET("/api/chatroom/records")
+    Call<ChatRoomResponse> getRoomRecords();
 }
 
 //왜인지 @Field 안돌아가서 다 @Body로 하기위함....string은 사소해서 여기에 클래스 선언함

@@ -21,6 +21,7 @@ import com.osh.chatting_bar_android.data_model.ChatRoomInformation;
 import com.osh.chatting_bar_android.data_model.ChatRoomResponse;
 import com.osh.chatting_bar_android.data_model.SearchResponse;
 import com.osh.chatting_bar_android.data_model.Status;
+import com.osh.chatting_bar_android.data_model.UserResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +45,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mainActivity = MainActivity.this;
+
+        //유저 정보가 비어있으면 api로 정보 가져와서 싱글톤에 넣어준다. User.getInstance().get~();
+        if (User.getInstance().getId() == null) {
+            Call<UserResponse> userCall = RetrofitService.getApiTokenService().getUserInfo();
+            userCall.enqueue(new Callback<UserResponse>() {
+                //콜백 받는 부분
+                @Override
+                public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                    if (response.isSuccessful()) {
+                        Log.d("test", response.body().toString() + ", code: " + response.code());
+                        User.getInstance().setInformation(response.body().getInformation());
+                    } else {
+                        try {
+                            Log.d("test", "유저정보 불러오기" + response.errorBody().string() + ", code: " + response.code());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(getApplicationContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserResponse> call, Throwable t) {
+                    Log.d("test", "실패: " + t.getMessage());
+
+                    Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         InitBtn();
 
