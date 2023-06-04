@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.osh.chatting_bar_android.data_model.BaseResponse;
 import com.osh.chatting_bar_android.data_model.ChatRoomInformation;
 import com.osh.chatting_bar_android.data_model.OneCharRoomResponse;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import kotlinx.coroutines.CoroutineScope;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,13 +38,16 @@ public class RoomActivity extends AppCompatActivity {
     private RoomMemberRecyclerViewAdapter RoomMemberRecyclerViewAdapter;
     ChatRoomInformation information;
     Boolean isHost;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        isHost = Boolean.TRUE;
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        isHost = Boolean.TRUE;
         Intent intent = getIntent();
         if (intent.getLongExtra("RoomID", 0) != 0) {
             Call<OneCharRoomResponse> call = RetrofitService.getApiTokenService().getRoomInfo(intent.getLongExtra("RoomID", 0));
@@ -77,12 +83,14 @@ public class RoomActivity extends AppCompatActivity {
 
 //    채팅 리사이클러뷰 불러오기
     protected void InitChatting(){
+
         RecyclerView recyclerView = findViewById(R.id.chatting_recyclerView);
 
         MessagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(this, getMessageList());
         recyclerView.setAdapter(MessagesRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     //방 참여자 불러오기
