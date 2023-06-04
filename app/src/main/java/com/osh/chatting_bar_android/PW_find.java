@@ -41,6 +41,8 @@ public class PW_find extends AppCompatActivity {
         PW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
+                startActivity(intent);
 //                EditText name_input = findViewById(R.id.name_input);
 //                EditText email_input = findViewById(R.id.email_input);
 //                emailSender emailSender = new emailSender("osh000308@gmail.com", "dndswyvsevefbfqn"); //이메일 생성
