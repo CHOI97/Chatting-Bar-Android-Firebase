@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.osh.chatting_bar_android.data_model.Categories;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,13 +67,9 @@ public class Topic_set extends AppCompatActivity {
     protected void InitTagList(){
         RecyclerView recyclerView = findViewById(R.id.topicSet_recyclerView);
 
-        EditTagRecyclerViewAdapter = new EditTagRecyclerViewAdapter(this, getTagList());
+        EditTagRecyclerViewAdapter = new EditTagRecyclerViewAdapter(this, Arrays.asList(Categories.values()));
         recyclerView.setAdapter(EditTagRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
-    }
-
-    private List<String> getTagList() {
-        return Arrays.asList("home_deco", "volunteering", "백계환", "배종찬", "신초은","배수호", "오시현", "백계환", "배종찬", "신초은","배수호", "오시현", "백계환", "배종찬", "신초은","배수호", "오시현","백계환", "배종찬", "신초은","배수호", "오시현", "백계환", "배종찬", "신초은");
     }
 }

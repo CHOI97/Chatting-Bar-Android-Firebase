@@ -83,7 +83,8 @@ public interface RetrofitInterface {
     @GET("api/users/following/{id}")
     Call<FollowingResponse> getFollowerByID(@Path("id") String id);
 
-
+    @PATCH("/api/users/categories")
+    Call<BaseResponse> setCategories(@Body CategorieRequest categorieRequest);
 }
 
 //왜인지 @Field 안돌아가서 다 @Body로 하기위함....string은 사소해서 여기에 클래스 선언함
