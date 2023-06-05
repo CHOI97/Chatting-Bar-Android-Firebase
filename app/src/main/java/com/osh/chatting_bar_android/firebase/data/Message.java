@@ -1,7 +1,8 @@
-package com.osh.chatting_bar_android.db;
+package com.osh.chatting_bar_android.firebase.data;
 
 public class Message {
-    public Message(String username, long time,String message){
+    public Message(long uid,String username, long time,String message){
+        this.uid = uid;
         this.username = username;
         this.time = time;
         this.message = message;
@@ -9,6 +10,7 @@ public class Message {
     public String username;
     public long time;
     public String message;
+    public long uid;
 
     public String getUsername() {
         return username;
