@@ -45,7 +45,7 @@ public class RetrofitService {
                             response.close();
                             Log.d("test", "재발급 이전\n" + User.getInstance().getPreferences().getString("AccessToken", "") + "\n" +
                                     User.getInstance().getPreferences().getString("RefreshToken", ""));
-                            SignInResponse tokenResponse = getApiService().refresh(new stringRequest(User.getInstance().getPreferences().getString("RefreshToken", ""))).execute().body();
+                            SignInResponse tokenResponse = getApiService().refresh(new refreshTokenRequest(User.getInstance().getPreferences().getString("RefreshToken", ""))).execute().body();
                             String token = tokenResponse.getInformation().getAccessToken();
                             String Rtoken = tokenResponse.getInformation().getRefreshToken();
                             //로컬에 저장

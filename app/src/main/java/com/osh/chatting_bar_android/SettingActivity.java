@@ -2,7 +2,6 @@ package com.osh.chatting_bar_android;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,8 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.osh.chatting_bar_android.data_model.BaseResponse;
-import com.osh.chatting_bar_android.data_model.UserInformation;
-import com.osh.chatting_bar_android.data_model.UserResponse;
 
 import java.io.IOException;
 
@@ -141,7 +137,7 @@ public class SettingActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d("test", "로그아웃\n엑세스토큰: " + pref.getString("AccessToken", "") + "\n리프레시토큰: " + pref.getString("RefreshToken", ""));
-                    Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new stringRequest(pref.getString("RefreshToken", "")));
+                    Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new refreshTokenRequest(pref.getString("RefreshToken", "")));
                     call.enqueue(new Callback<BaseResponse>() {
                         //콜백 받는 부분
                         @Override

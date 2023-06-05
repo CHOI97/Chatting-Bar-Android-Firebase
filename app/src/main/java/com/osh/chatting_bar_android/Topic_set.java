@@ -13,12 +13,10 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.osh.chatting_bar_android.data_model.BaseResponse;
-import com.osh.chatting_bar_android.data_model.CategorieRequest;
 import com.osh.chatting_bar_android.data_model.Categories;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +43,7 @@ public class Topic_set extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //관심주제 설정에서 뒤로나가면 로그인 화면 -> 로그아웃
-                Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new stringRequest(pref.getString("RefreshToken", "")));
+                Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new refreshTokenRequest(pref.getString("RefreshToken", "")));
                 call.enqueue(new Callback<BaseResponse>() {
                     //콜백 받는 부분
                     @Override
