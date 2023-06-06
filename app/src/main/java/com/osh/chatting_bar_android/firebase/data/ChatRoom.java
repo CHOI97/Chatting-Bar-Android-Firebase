@@ -1,39 +1,40 @@
 package com.osh.chatting_bar_android.firebase.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoom {
-    public List<Message> chatList;
-    public ChatRoom chatRoomData;
-    public List<Guest> guestList;
+    public ArrayList<Message> chatList;
+    public ChatRoomData chatRoomData;
+    public ArrayList<Guest> guestList;
 
-    public ChatRoom(List<Message> chatList,ChatRoom chatRoomData,List<Guest> guestList){
+    public ChatRoom(ArrayList<Message> chatList, ChatRoomData chatRoomData, ArrayList<Guest> guestList){
         this.chatList = chatList;
         this.chatRoomData = chatRoomData;
         this.guestList = guestList;
     }
 
-    public List<Message> getChatList() {
+    public ArrayList<Message> getChatList() {
         return chatList;
     }
 
-    public void setChatList(List<Message> chatList) {
+    public void setChatList(ArrayList<Message> chatList) {
         this.chatList = chatList;
     }
 
-    public ChatRoom getChatRoomData() {
+    public ChatRoomData getChatRoomData() {
         return chatRoomData;
     }
 
-    public void setChatRoomData(ChatRoom chatRoomData) {
+    public void setChatRoomData(ChatRoomData chatRoomData) {
         this.chatRoomData = chatRoomData;
     }
 
-    public List<Guest> getGuestList() {
+    public ArrayList<Guest> getGuestList() {
         return guestList;
     }
 
-    public void setGuestList(List<Guest> guestList) {
+    public void setGuestList(ArrayList<Guest> guestList) {
         this.guestList = guestList;
     }
 }
