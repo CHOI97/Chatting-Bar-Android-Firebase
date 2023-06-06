@@ -70,6 +70,9 @@ public interface RetrofitInterface {
     @GET("/api/chatroom/recommend")
     Call<ChatRoomResponse> getRecommendRoom();
 
+    @GET("/api/chatroom/follow")
+    Call<ChatRoomResponse> getFollowRoom();
+
     @GET("/api/chatroom/search/{search}")
     Call<SearchResponse> getSearchRoom(@Path("search") String search);
 

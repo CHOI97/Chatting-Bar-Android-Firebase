@@ -146,6 +146,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //구독자 채팅방
+        call = RetrofitService.getApiTokenService().getFollowRoom();
+        call.enqueue(new Callback<ChatRoomResponse>() {
+            //콜백 받는 부분
+            @Override
+            public void onResponse(Call<ChatRoomResponse> call, Response<ChatRoomResponse> response) {
+                if (response.isSuccessful()) {
+//                    Log.d("test", "추천순\n"+response.body().toString() + ", code: " + response.code());
+                    latestInfo = new ArrayList<>();
+                    for (ChatRoomInformation info :response.body().getInformation()) {
+                        if (info.getStatus() == Status.ACTIVE)
+                            latestInfo.add(info);
+                    }
+                    if (latestInfo.isEmpty()) {
+                        LinearLayout followLayout = findViewById(R.id.follow_layout);
+                        followLayout.setVisibility(View.GONE);
+                    } else
+                        InitRoomList(latestInfo, findViewById(R.id.subscribe_recyclerView));
+                } else {
+                    try {
+                        Log.d("test", "구독방"+response.errorBody().string() + ", code: " + response.code());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(getApplicationContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<ChatRoomResponse> call, Throwable t) {
+                Log.d("test", "실패: " + t.getMessage());
+
+                Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         Intent intent = getIntent();
         if (intent.hasExtra("search")) {
             String str = intent.getStringExtra("search");
