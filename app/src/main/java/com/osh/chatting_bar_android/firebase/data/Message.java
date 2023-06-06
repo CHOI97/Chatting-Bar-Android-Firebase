@@ -1,17 +1,17 @@
 package com.osh.chatting_bar_android.firebase.data;
 
 public class Message {
-    public Message(long uid,String username,String message){
+    public Message(long uid,String username,String time,String message){
         this.uid = uid;
         this.username = username;
-//        this.time = time;
+        this.time = time;
         this.message = message;
 //        this.type = type;
     }
     //Firebase 빈 생성자 추가 해야함
     public Message(){}
     public String username;
-//    public long time;
+    public String time;
     public String message;
     public long uid;
 
@@ -23,13 +23,13 @@ public class Message {
         this.username = username;
     }
 
-//    public long getTime() {
-//        return time;
-//    }
+    public String getTime() {
+        return time;
+    }
 
-//    public void setTime(long time) {
-//        this.time = time;
-//    }
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getMessage() {
         return message;
