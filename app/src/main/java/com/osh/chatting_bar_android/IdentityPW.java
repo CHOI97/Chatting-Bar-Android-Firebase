@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.osh.chatting_bar_android.data_model.BaseResponse;
+import com.osh.chatting_bar_android.data_model.BaseResponse2;
 import com.osh.chatting_bar_android.data_model.CodeRequest;
 
 import java.io.IOException;
@@ -48,14 +49,15 @@ public class IdentityPW extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText number_input = findViewById(R.id.number_input);
-                Call<BaseResponse> call = RetrofitService.getApiTokenService().checkVeriCode(new CodeRequest(email, number_input.getText().toString()));
-                call.enqueue(new Callback<BaseResponse>() {
+                Call<BaseResponse2> call = RetrofitService.getApiService().checkVeriCode(new CodeRequest(email, number_input.getText().toString()));
+                call.enqueue(new Callback<BaseResponse2>() {
                     //콜백 받는 부분
                     @Override
-                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    public void onResponse(Call<BaseResponse2> call, Response<BaseResponse2> response) {
                         if (response.isSuccessful()) {
                             Log.d("test", response.body().toString() + ", code: " + response.code());
                             Intent intent = new Intent(getApplicationContext(), PW_result.class);
+                            intent.putExtra("email", email);
                             startActivity(intent);
 
                             finish();
@@ -70,7 +72,7 @@ public class IdentityPW extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    public void onFailure(Call<BaseResponse2> call, Throwable t) {
                         Log.d("test", "실패: " + t.getMessage());
 
                         Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();

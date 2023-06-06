@@ -2,7 +2,6 @@ package com.osh.chatting_bar_android;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,8 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.osh.chatting_bar_android.data_model.BaseResponse;
-import com.osh.chatting_bar_android.data_model.UserInformation;
-import com.osh.chatting_bar_android.data_model.UserResponse;
+import com.osh.chatting_bar_android.data_model.BaseResponse2;
 
 import java.io.IOException;
 
@@ -62,7 +59,6 @@ public class SettingActivity extends AppCompatActivity {
 
     }
     protected void InitBtn() {
-        {
             Context context = this;
             //구독자 편집
             Button editSubscriber_btn = findViewById(R.id.editsubscriber_button);
@@ -90,6 +86,46 @@ public class SettingActivity extends AppCompatActivity {
 
                 }
             });
+            //비밀번호 변경
+        LinearLayout editPW_btn = findViewById(R.id.editPW_button);
+        editPW_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editPW_btn.setEnabled(false);
+                Call<BaseResponse2> call = RetrofitService.getApiService().requestVeri(new emailRequest(User.getInstance().getEmail()));
+                call.enqueue(new Callback<BaseResponse2>() {
+                    //콜백 받는 부분
+                    @Override
+                    public void onResponse(Call<BaseResponse2> call, Response<BaseResponse2> response) {
+                        if (response.isSuccessful()) {
+                            Log.d("test", response.body().toString() + ", code: " + response.code());
+                            Intent intent = new Intent(getApplicationContext(), IdentityPW.class);
+                            intent.putExtra("email", User.getInstance().getEmail());
+                            startActivity(intent);
+                            editPW_btn.setEnabled(true);
+                        } else {
+                            try {
+                                Log.d("test", "인증번호 보내기"+response.errorBody().string() + ", code: " + response.code());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            editPW_btn.setEnabled(true);
+                            Toast.makeText(getApplicationContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<BaseResponse2> call, Throwable t) {
+                        editPW_btn.setEnabled(true);
+                        Log.d("test", "실패: " + t.getMessage());
+
+                        Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
             //채팅 기록
             Button chatlist_btn = findViewById(R.id.chattingList_button);
             chatlist_btn.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +177,7 @@ public class SettingActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d("test", "로그아웃\n엑세스토큰: " + pref.getString("AccessToken", "") + "\n리프레시토큰: " + pref.getString("RefreshToken", ""));
-                    Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new stringRequest(pref.getString("RefreshToken", "")));
+                    Call<BaseResponse> call = RetrofitService.getApiService().sign_out(new refreshTokenRequest(pref.getString("RefreshToken", "")));
                     call.enqueue(new Callback<BaseResponse>() {
                         //콜백 받는 부분
                         @Override
@@ -175,6 +211,5 @@ public class SettingActivity extends AppCompatActivity {
                     });
                 }
             });
-        }
     }
 }
