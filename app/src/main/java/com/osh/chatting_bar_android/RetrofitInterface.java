@@ -34,7 +34,7 @@ public interface RetrofitInterface {
     Call<BaseResponse> sign_out(@Body refreshTokenRequest refreshToken);
 
     @POST("/api/chatroom")
-    Call<BaseResponse> createRoom(@Body ChatRoomRequest chatRoomRequest);
+    Call<CreateRoomResponse> createRoom(@Body ChatRoomRequest chatRoomRequest);
 
 //    @FormUrlEncoded
 //    @Headers("Content-Type: application/json")

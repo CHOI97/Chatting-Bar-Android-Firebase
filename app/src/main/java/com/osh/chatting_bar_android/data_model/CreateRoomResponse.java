@@ -4,19 +4,22 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ChatRoomResponse {
+public class CreateRoomResponse {
     @SerializedName("check")
     private boolean check;
 
     @SerializedName("information")
-    private List<ChatRoomInformation> information;
+    private CreateChatRoomInformation information;
+
+//    @SerializedName("id")
+//    private long id;
 
 
     public boolean getCheck() {
         return check;
     }
 
-    public List<ChatRoomInformation> getInformation() {
+    public CreateChatRoomInformation getInformation() {
         return information;
     }
 

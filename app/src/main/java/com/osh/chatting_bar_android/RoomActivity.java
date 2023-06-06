@@ -41,6 +41,7 @@ public class RoomActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private String userRole;
+    private long roomId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +49,12 @@ public class RoomActivity extends AppCompatActivity {
         userRole = "Host";
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         isHost = Boolean.TRUE;
+
         Intent intent = getIntent();
-        if (intent.getLongExtra("RoomID", 0) != 0) {
+        roomId = intent.getLongExtra("RoomID", 0);
+
+        if (roomId != 0) {
             Call<OneCharRoomResponse> call = RetrofitService.getApiTokenService().getRoomInfo(intent.getLongExtra("RoomID", 0));
             call.enqueue(new Callback<OneCharRoomResponse>() {
                 //콜백 받는 부분
@@ -92,7 +95,10 @@ public class RoomActivity extends AppCompatActivity {
             GuestInit();
         }
     }
+    public void initRoom(){
+        // 룸 ID로 룸조회하기
 
+    }
     protected void HostInit(){
             //구독 버튼 -> 전체 얼리기 버튼으로 변경
             Button allChatBan_btn = findViewById(R.id.subscribeOrAllban_button);
@@ -152,7 +158,6 @@ public class RoomActivity extends AppCompatActivity {
                             MainActivity.mainActivity.finish();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
-
                             finish();
                         } else {
                             try {
