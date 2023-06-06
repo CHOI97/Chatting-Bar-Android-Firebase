@@ -26,10 +26,14 @@ import com.osh.chatting_bar_android.data_model.ChatRoomResponse;
 import com.osh.chatting_bar_android.data_model.CreateRoomResponse;
 import com.osh.chatting_bar_android.firebase.DatabaseManager;
 import com.osh.chatting_bar_android.firebase.data.ChatRoom;
+import com.osh.chatting_bar_android.firebase.data.ChatRoomData;
+import com.osh.chatting_bar_android.firebase.data.Guest;
+import com.osh.chatting_bar_android.firebase.data.Message;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -177,7 +181,7 @@ public class CreateRoomActivity extends AppCompatActivity {
                 formatter = new SimpleDateFormat("yyyy-MM-ddHH:mm");
                 ChatRoomRequest chatRoomRequest = null;
                 try {
-                    chatRoomRequest = new ChatRoomRequest("필요없음..", name.getText().toString(), tempSet,
+                    chatRoomRequest = new ChatRoomRequest(name.getText().toString(), name.getText().toString(), tempSet,
                             formatter.parse(now_ + startTime), formatter.parse(now_ + durationtime)
                             , Integer.parseInt(party_spinner.getSelectedItem().toString()), PWSwitch.isChecked(), PW.getText().toString());
                 } catch (ParseException e) {
@@ -189,9 +193,15 @@ public class CreateRoomActivity extends AppCompatActivity {
                     public void onResponse(Call<CreateRoomResponse> call, Response<CreateRoomResponse> response) {
                         if (response.isSuccessful()) {
                             Log.d("test", response.body().toString() +", code: "+ response.code());
-                            db.createRoom(response.body().getInformation().getId());
+                            ChatRoomData chatRoomData = new ChatRoomData(User.getInstance().getId(), name.getText().toString());
+                            ArrayList<Guest> guest = new ArrayList<Guest>();
+                            ArrayList<Message> message = new ArrayList<Message>();
+                            ChatRoom chatRoom = new ChatRoom(message,chatRoomData,guest);
+                            db.createRoom(response.body().getInformation().getId(),chatRoom);
+                            Log.d("Firebase","id : "+response.body().getInformation().getId());
                             Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
-                            intent.getLongExtra("RoomID",response.body().getInformation().getId());
+                            intent.putExtra("RoomID",response.body().getInformation().getId());
+
                             startActivity(intent);
                             finish();
                         } else {

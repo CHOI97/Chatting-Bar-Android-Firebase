@@ -2,6 +2,7 @@ package com.osh.chatting_bar_android;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.osh.chatting_bar_android.data_model.UserResponse;
 import com.osh.chatting_bar_android.firebase.ChatCallback;
 import com.osh.chatting_bar_android.firebase.DatabaseManager;
 import com.osh.chatting_bar_android.firebase.data.ChatRoom;
+import com.osh.chatting_bar_android.firebase.data.ChatRoomData;
 import com.osh.chatting_bar_android.firebase.data.Message;
 
 import java.io.IOException;
@@ -40,25 +42,34 @@ import retrofit2.Response;
 
 
 public class RoomActivity extends AppCompatActivity {
+
+    TextView title;
+    EditText chatInput;
     private MessagesRecyclerViewAdapter MessagesRecyclerViewAdapter;
     private RoomMemberRecyclerViewAdapter RoomMemberRecyclerViewAdapter;
     ChatRoomInformation information;
     Boolean isHost;
+    SharedPreferences pref;
     public DatabaseManager db;
 
     private String userRole;
     private long roomId;
+
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         userRole = "Host";
-
+        user = User.getInstance();
+        pref = User.getInstance().getPreferences();
         db = new DatabaseManager();
         isHost = Boolean.TRUE;
-
+        title = findViewById(R.id.room_name);
+        chatInput = findViewById(R.id.chat_input);
         Intent intent = getIntent();
         roomId = intent.getLongExtra("RoomID", 0);
+        Log.d("roomId",Long.toString(roomId));
 
         if (roomId != 0) {
             // 방 조회 부분
@@ -70,8 +81,8 @@ public class RoomActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Log.d("test", response.body().toString() + ", code: " + response.code());
                         information = response.body().getInformation();
-                        TextView title = findViewById(R.id.room_name);
                         title.setText(information.getName());
+
                         initRoom();
                     } else {
                         try {
@@ -105,16 +116,19 @@ public class RoomActivity extends AppCompatActivity {
     }
     public void initRoom(){
         // 룸 ID로 룸조회하기
-        db.inquiryRoom(roomId, new ChatCallback<ChatRoom>() {
+        db.inquiryRoom(roomId, new ChatCallback<ChatRoomData>() {
+
             @Override
-            public void onCallback(ChatRoom data) {
+            public void onCallback(ChatRoomData data) {
                 // 호스트 확인 메소드
-                if(data.chatRoomData.masterId == information.getHostId()){
+                Log.d("information",Long.toString(information.getHostId()));
+                Log.d("datasnapshot data",Long.toString(data.masterId));
+                if(data.masterId == information.getHostId()){
                     HostInit();
                 }else{
                     GuestInit();
                 }
-                InitChatting(data.chatList);
+//                InitChatting(data.chatList);
             }
         });
 
@@ -140,6 +154,15 @@ public class RoomActivity extends AppCompatActivity {
 
             }
         });
+    }
+    protected void sendMessage(){
+        long uid = user.getId();
+        String userName = user.getNickname();
+        String message = chatInput.getText().toString();
+        Log.d("sendmessage",Long.toString(roomId));
+        db.sendMessage(roomId,new Message(uid,userName,message));
+        chatInput.setText("");
+
     }
 
 //    채팅 리사이클러뷰 불러오기
@@ -245,7 +268,7 @@ public class RoomActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"내용을 입력해주세요", Toast.LENGTH_LONG).show();
                 }
                 else {
-
+                    sendMessage();
                 }
             }
         });

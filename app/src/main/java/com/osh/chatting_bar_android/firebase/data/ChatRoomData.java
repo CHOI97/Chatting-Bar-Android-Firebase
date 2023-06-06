@@ -7,6 +7,8 @@ public class ChatRoomData {
         this.masterId = masterId;
         this.title = title;
     }
+    //Firebase 빈 생성자 추가 해야함
+    public ChatRoomData(){}
 
     public long getMasterId() {
         return masterId;
