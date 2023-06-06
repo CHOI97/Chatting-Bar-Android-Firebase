@@ -17,32 +17,51 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.osh.chatting_bar_android.data_model.BaseResponse;
 import com.osh.chatting_bar_android.data_model.ChatRoomInformation;
 import com.osh.chatting_bar_android.data_model.OneCharRoomResponse;
 import com.osh.chatting_bar_android.data_model.UserResponse;
+import com.osh.chatting_bar_android.firebase.ChatCallback;
+import com.osh.chatting_bar_android.firebase.DatabaseManager;
+import com.osh.chatting_bar_android.firebase.data.ChatRoom;
+import com.osh.chatting_bar_android.firebase.data.Message;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import kotlinx.coroutines.CoroutineScope;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class RoomActivity extends AppCompatActivity {
     private MessagesRecyclerViewAdapter MessagesRecyclerViewAdapter;
     private RoomMemberRecyclerViewAdapter RoomMemberRecyclerViewAdapter;
     ChatRoomInformation information;
+    Boolean isHost;
+    public DatabaseManager db;
+
     private String userRole;
+    private long roomId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         userRole = "Host";
 
+        db = new DatabaseManager();
+        isHost = Boolean.TRUE;
+
         Intent intent = getIntent();
-        if (intent.getLongExtra("RoomID", 0) != 0) {
+        roomId = intent.getLongExtra("RoomID", 0);
+
+        if (roomId != 0) {
+            // 방 조회 부분
             Call<OneCharRoomResponse> call = RetrofitService.getApiTokenService().getRoomInfo(intent.getLongExtra("RoomID", 0));
             call.enqueue(new Callback<OneCharRoomResponse>() {
                 //콜백 받는 부분
@@ -51,6 +70,9 @@ public class RoomActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Log.d("test", response.body().toString() + ", code: " + response.code());
                         information = response.body().getInformation();
+                        TextView title = findViewById(R.id.room_name);
+                        title.setText(information.getName());
+                        initRoom();
                     } else {
                         try {
                             Log.d("test", "방 나가기"+response.errorBody().string() + ", code: " + response.code());
@@ -69,8 +91,6 @@ public class RoomActivity extends AppCompatActivity {
                 }
             });
         }
-
-        InitChatting();
         InitMemberList();
         InitBtn();
         //방에 있는 유저 조회
@@ -83,7 +103,22 @@ public class RoomActivity extends AppCompatActivity {
             GuestInit();
         }
     }
+    public void initRoom(){
+        // 룸 ID로 룸조회하기
+        db.inquiryRoom(roomId, new ChatCallback<ChatRoom>() {
+            @Override
+            public void onCallback(ChatRoom data) {
+                // 호스트 확인 메소드
+                if(data.chatRoomData.masterId == information.getHostId()){
+                    HostInit();
+                }else{
+                    GuestInit();
+                }
+                InitChatting(data.chatList);
+            }
+        });
 
+    }
     protected void HostInit(){
             //구독 버튼 -> 전체 얼리기 버튼으로 변경
             Button allChatBan_btn = findViewById(R.id.subscribeOrAllban_button);
@@ -108,12 +143,13 @@ public class RoomActivity extends AppCompatActivity {
     }
 
 //    채팅 리사이클러뷰 불러오기
-    protected void InitChatting(){
+    protected void InitChatting(ArrayList<Message> chatList){
         RecyclerView recyclerView = findViewById(R.id.chatting_recyclerView);
-        MessagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(this, getMessageList());
+        MessagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(this, chatList);
         recyclerView.setAdapter(MessagesRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     //방 참여자 불러오기
@@ -141,7 +177,6 @@ public class RoomActivity extends AppCompatActivity {
                             MainActivity.mainActivity.finish();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
-
                             finish();
                         } else {
                             try {
@@ -215,9 +250,7 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
     }
-    private List<String> getMessageList() {
-        return Arrays.asList("테스트 메세지 123", "테스트 메세지 456", "테스트 메세지 789", "장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지", "장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지장문 테스트 메세지");
-    }
+
     private List<String> getMemberList(){
         return Arrays.asList("배수호","배종찬","오시현","백계환","신초은");
     }

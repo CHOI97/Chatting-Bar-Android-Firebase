@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "548992247258",
+    "firebase_url": "https://chatbar-47598-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "chatbar-47598",
+    "storage_bucket": "chatbar-47598.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:548992247258:android:7a9c69a3396d3b9718cce3",
+        "android_client_info": {
+          "package_name": "com.osh.chatting_bar_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9Q_8PpkOG0k9Oosdy1gquXuAatnBU8nM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

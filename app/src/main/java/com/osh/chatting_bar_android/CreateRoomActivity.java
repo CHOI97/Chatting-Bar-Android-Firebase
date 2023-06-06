@@ -22,6 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.osh.chatting_bar_android.data_model.BaseResponse;
 import com.osh.chatting_bar_android.data_model.Categories;
 import com.osh.chatting_bar_android.data_model.ChatRoomRequest;
+import com.osh.chatting_bar_android.data_model.ChatRoomResponse;
+import com.osh.chatting_bar_android.data_model.CreateRoomResponse;
+import com.osh.chatting_bar_android.firebase.DatabaseManager;
+import com.osh.chatting_bar_android.firebase.data.ChatRoom;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -42,9 +46,12 @@ public class CreateRoomActivity extends AppCompatActivity {
     private int startH, startM;
     private String durationtime;
     private EditTagPopupDialog editTagPopupDialog;
+
+    public DatabaseManager db;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_room);
+        db = new DatabaseManager();
         pref = User.getInstance().getPreferences();
         InitBtn();
     }
@@ -176,14 +183,15 @@ public class CreateRoomActivity extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Call<BaseResponse> call = RetrofitService.getApiTokenService().createRoom(chatRoomRequest);
-                call.enqueue(new Callback<BaseResponse>(){
-                    //콜백 받는 부분
+                Call<CreateRoomResponse> call = RetrofitService.getApiTokenService().createRoom(chatRoomRequest);
+                call.enqueue(new Callback<CreateRoomResponse>() {
                     @Override
-                    public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    public void onResponse(Call<CreateRoomResponse> call, Response<CreateRoomResponse> response) {
                         if (response.isSuccessful()) {
                             Log.d("test", response.body().toString() +", code: "+ response.code());
+                            db.createRoom(response.body().getInformation().getId());
                             Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
+                            intent.getLongExtra("RoomID",response.body().getInformation().getId());
                             startActivity(intent);
                             finish();
                         } else {
@@ -197,9 +205,8 @@ public class CreateRoomActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    public void onFailure(Call<CreateRoomResponse> call, Throwable t) {
                         Log.d("test", "실패: "+ t.getMessage());
-
                         Toast.makeText(getApplicationContext(), "네트워크 문제로 방생성에 실패했습니다", Toast.LENGTH_SHORT).show();
                     }
                 });

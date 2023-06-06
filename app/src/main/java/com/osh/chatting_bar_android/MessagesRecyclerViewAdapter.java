@@ -9,14 +9,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.osh.chatting_bar_android.firebase.data.Message;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRecyclerViewAdapter.MyViewHolder>{
 
-    private List<String> messageList;
+    private ArrayList<Message> messageList;
     private Context context;
-    public MessagesRecyclerViewAdapter(Context context, List<String>  messageList) {
-
+    public MessagesRecyclerViewAdapter(Context context, ArrayList<Message> messageList) {
         this.messageList = messageList;
         this.context = context;
     }
@@ -55,7 +57,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRe
 
     @Override
     public void onBindViewHolder(@NonNull MessagesRecyclerViewAdapter.MyViewHolder holder, int position) {
-        holder.textView.setText(messageList.get(position));
+        holder.textView.setText(messageList.get(position).getMessage());
     }
 
     @Override
