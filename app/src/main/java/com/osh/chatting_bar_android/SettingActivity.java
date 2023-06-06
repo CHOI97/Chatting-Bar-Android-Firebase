@@ -98,6 +98,7 @@ public class SettingActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<BaseResponse2> call, Response<BaseResponse2> response) {
                         if (response.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "인증번호가 사용자 이메일로 전송되었습니다", Toast.LENGTH_LONG).show();
                             Log.d("test", response.body().toString() + ", code: " + response.code());
                             Intent intent = new Intent(getApplicationContext(), IdentityPW.class);
                             intent.putExtra("email", User.getInstance().getEmail());
