@@ -45,7 +45,7 @@ public class RetrofitService {
                             response.close();
                             Log.d("test", "재발급 이전\n" + User.getInstance().getPreferences().getString("AccessToken", "") + "\n" +
                                     User.getInstance().getPreferences().getString("RefreshToken", ""));
-                            SignInResponse tokenResponse = getApiService().refresh(new stringRequest(User.getInstance().getPreferences().getString("RefreshToken", ""))).execute().body();
+                            SignInResponse tokenResponse = getApiService().refresh(new refreshTokenRequest(User.getInstance().getPreferences().getString("RefreshToken", ""))).execute().body();
                             String token = tokenResponse.getInformation().getAccessToken();
                             String Rtoken = tokenResponse.getInformation().getRefreshToken();
                             //로컬에 저장
@@ -56,6 +56,11 @@ public class RetrofitService {
                             Request newRequest = chain.request().newBuilder().header("Content-Type", "application/json").header("Authorization", "Bearer "+token).build();
                             Response newResponse = chain.proceed(newRequest);
                             Log.d("test", "intercept: " + newResponse.code());
+                            return newResponse;
+                        } else if (response.code() == 500) {
+                            response.close();
+                            Request newRequest = chain.request().newBuilder().removeHeader("Content-Type").header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8").header("Authorization", "Bearer "+User.getInstance().getPreferences().getString("AccessToken", "")).build();
+                            Response newResponse = chain.proceed(newRequest);
                             return newResponse;
                         }
                         return response;

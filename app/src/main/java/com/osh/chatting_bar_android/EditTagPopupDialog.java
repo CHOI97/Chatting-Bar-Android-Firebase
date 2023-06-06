@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.osh.chatting_bar_android.data_model.BaseResponse;
 import com.osh.chatting_bar_android.data_model.CategorieRequest;
 import com.osh.chatting_bar_android.data_model.Categories;
@@ -21,7 +22,9 @@ import com.osh.chatting_bar_android.data_model.UserResponse;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,13 +54,15 @@ public class EditTagPopupDialog extends Dialog {
         completeClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<BaseResponse> call = RetrofitService.getApiTokenService().setCategories(new CategorieRequest(EditTagRecyclerViewAdapter.getUserTagList()));
+
+                Call<BaseResponse> call = RetrofitService.getApiTokenService().setCategories(EditTagRecyclerViewAdapter.getUserTagList());
                 call.enqueue(new Callback<BaseResponse>() {
                     //콜백 받는 부분
                     @Override
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                         if (response.isSuccessful()) {
                             Log.d("test", response.body().toString() + ", code: " + response.code());
+                            User.getInstance().setCategories(EditTagRecyclerViewAdapter.getUserTagList());
                         } else {
                             try {
                                 Log.d("test", "태그 등록하기"+response.errorBody().string() + ", code: " + response.code());

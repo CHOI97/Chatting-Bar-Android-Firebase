@@ -98,4 +98,12 @@ public class User {
     public EnumSet<Categories> getCategories() {
         return categories;
     }
+
+    public void logout() {
+        id = null;
+        nickname = null;
+        email = null;
+        profileImg = null;
+        categories = null;
+    }
 }
