@@ -4,18 +4,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.osh.chatting_bar_android.data_model.BaseResponse;
-import com.osh.chatting_bar_android.data_model.UserResponse;
+import com.osh.chatting_bar_android.data_model.BaseResponse2;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,11 +66,12 @@ public class PW_find extends AppCompatActivity {
                 } else if (email_input.getText().toString().isEmpty() || !isValidEmail(email_input.getText().toString())){
                     Toast.makeText(getApplicationContext(),"이메일을 잘못 입력했습니다", Toast.LENGTH_SHORT).show();
                 } else {
-                    Call<BaseResponse> call = RetrofitService.getApiTokenService().requestVeri(new stringRequest(email_input.getText().toString()));
-                    call.enqueue(new Callback<BaseResponse>() {
+                    PW.setEnabled(false);
+                    Call<BaseResponse2> call = RetrofitService.getApiService().requestVeri(new emailRequest(email_input.getText().toString()));
+                    call.enqueue(new Callback<BaseResponse2>() {
                         //콜백 받는 부분
                         @Override
-                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                        public void onResponse(Call<BaseResponse2> call, Response<BaseResponse2> response) {
                             if (response.isSuccessful()) {
                                 Log.d("test", response.body().toString() + ", code: " + response.code());
                                 Intent intent = new Intent(getApplicationContext(), IdentityPW.class);
@@ -81,7 +90,7 @@ public class PW_find extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                        public void onFailure(Call<BaseResponse2> call, Throwable t) {
                             Log.d("test", "실패: " + t.getMessage());
 
                             Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
