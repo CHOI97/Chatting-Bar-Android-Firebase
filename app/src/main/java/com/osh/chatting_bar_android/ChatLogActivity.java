@@ -32,6 +32,7 @@ public class ChatLogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_log);
 
+        chatList = new ArrayList<>();
         Call<ChatRoomResponse> call = RetrofitService.getApiTokenService().getRoomRecords();
         call.enqueue(new Callback<ChatRoomResponse>() {
             //콜백 받는 부분
@@ -39,11 +40,14 @@ public class ChatLogActivity extends AppCompatActivity {
             public void onResponse(Call<ChatRoomResponse> call, Response<ChatRoomResponse> response) {
                 if (response.isSuccessful()) {
 //                    Log.d("test", "최신순\n"+response.body().toString() + ", code: " + response.code());
-                    chatList = response.body().getInformation();
+                    for (ChatRoomInformation info :response.body().getInformation()) {
+                        if (info.getStatus() == Status.DELETE)
+                            chatList = response.body().getInformation();
+                    }
                     InitChatLog();
                 } else {
                     try {
-                        Log.d("test", "최신방"+response.errorBody().string() + ", code: " + response.code());
+                        Log.d("test", "기록"+response.errorBody().string() + ", code: " + response.code());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

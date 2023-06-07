@@ -1,9 +1,11 @@
 package com.osh.chatting_bar_android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,6 +53,15 @@ public class ChatLogRecyclerViewAdapter extends RecyclerView.Adapter<ChatLogRecy
     public void onBindViewHolder(@NonNull ChatLogRecyclerViewAdapter.MyViewHolder holder, int position) {
         holder.textView.setText(hostList.get(position).getHostName());
         holder.textView2.setText(hostList.get(position).getDesc());
+        int index = position;
+        holder.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RoomActivity.class);
+                intent.putExtra("RoomID", hostList.get(index).getId());
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -61,11 +72,15 @@ public class ChatLogRecyclerViewAdapter extends RecyclerView.Adapter<ChatLogRecy
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         TextView textView2;
+        LinearLayout btn;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.ChatLogHost_nickname_text);
             textView2 = itemView.findViewById(R.id.ChatMenu_text);
+
+            btn = itemView.findViewById((R.id.ClosedChatLog));
+
         }
     }
 }
