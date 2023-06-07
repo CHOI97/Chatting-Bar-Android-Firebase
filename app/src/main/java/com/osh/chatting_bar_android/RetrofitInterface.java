@@ -40,6 +40,7 @@ public interface RetrofitInterface {
 //    @Headers("Content-Type: application/json")
 //    @POST("/auth/refresh")
 //    Call<SignInResponse> refresh(@Field("refreshToken") String token); //->@Field가 안돌아가유...
+    @Headers("Content-Type: application/json")
     @POST("/auth/refresh")
     Call<SignInResponse> refresh(@Body refreshTokenRequest refreshToken);
 
@@ -96,7 +97,7 @@ public interface RetrofitInterface {
 //    @PATCH("/api/users/categories")
 //    Call<BaseResponse> setCategories(@Field("Categories")EnumSet<Categories> categories);
     @PATCH("/api/users/categories")
-    Call<BaseResponse> setCategories(@Body EnumSet<Categories> Categories);
+    Call<BaseResponse2> setCategories(@Body EnumSet<Categories> Categories);
 
 //    @FormUrlEncoded
 //    @POST("/api/users/requestVeri")
