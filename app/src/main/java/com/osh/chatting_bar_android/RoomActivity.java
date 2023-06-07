@@ -244,6 +244,15 @@ public class RoomActivity extends AppCompatActivity {
                     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                         if (response.isSuccessful()) {
                             Log.d("test", response.body().toString() + ", code: " + response.code());
+                            long uid = 0;
+                            String username = "notify";
+                            String message = user.getNickname()+"님이 나갔습니다.";
+                            Log.d("sendmessage",Long.toString(roomId));
+                            long now = System.currentTimeMillis();
+                            Date date = new Date(now);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                            db.sendMessage(roomId,new Message(uid,user.getNickname(),dateFormat.format(date),message));
+                            chatInput.setText("");
                             MainActivity.mainActivity.finish();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
