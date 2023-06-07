@@ -53,7 +53,7 @@ public interface RetrofitInterface {
     @GET("/api/chatroom/{roomId}")
     Call<OneCharRoomResponse> getRoomInfo(@Path("roomId") Long roomId);
 
-    @DELETE("/api/chatroom/{roomId}")
+    @PATCH("/api/chatroom/{roomId}")
     Call<BaseResponse> roomExit(@Path("roomId") Long roomId);
 
     @DELETE("/api/chatroom?roomId=&userId=")
