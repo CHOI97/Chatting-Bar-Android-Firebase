@@ -88,7 +88,7 @@ public class RoomActivity extends AppCompatActivity {
                         initRoom();
                     } else {
                         try {
-                            Log.d("test", "방 나가기"+response.errorBody().string() + ", code: " + response.code());
+                            Log.d("test", "방 조회"+response.errorBody().string() + ", code: " + response.code());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -106,7 +106,6 @@ public class RoomActivity extends AppCompatActivity {
         }
         observeChat();
         InitMemberList();
-        InitBtn();
         //방에 있는 유저 조회
         // API /api/chatroom/{roomId}/users에서
         // userNickname과 자신의 닉네임을 찾아 userRole을 비교
@@ -116,6 +115,7 @@ public class RoomActivity extends AppCompatActivity {
         else {
             GuestInit();
         }
+        InitBtn();
     }
     public void initRoom(){
         // 룸 ID로 룸조회하기
@@ -297,6 +297,66 @@ public class RoomActivity extends AppCompatActivity {
         roomExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(information.getHostId() == user.getId()) {
+                    Call<BaseResponse> call = RetrofitService.getApiTokenService().roomClose(new LongRequest(information.getId()));
+                    call.enqueue(new Callback<BaseResponse>() {
+                        //콜백 받는 부분
+                        @Override
+                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                            if (response.isSuccessful()) {
+                                Log.d("test", response.body().toString() + ", code: " + response.code());
+                                MainActivity.mainActivity.finish();
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                try {
+                                    Log.d("test", "방 닫기"+response.errorBody().string() + ", code: " + response.code());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Toast.makeText(getApplicationContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                            Log.d("test", "실패: " + t.getMessage());
+
+                            Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else {
+                    Call<BaseResponse> call = RetrofitService.getApiTokenService().roomExit(information.getId());
+                    call.enqueue(new Callback<BaseResponse>() {
+                        //콜백 받는 부분
+                        @Override
+                        public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                            if (response.isSuccessful()) {
+                                Log.d("test", response.body().toString() + ", code: " + response.code());
+                                MainActivity.mainActivity.finish();
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                try {
+                                    Log.d("test", "방 나가기"+response.errorBody().string() + ", code: " + response.code());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                Toast.makeText(getApplicationContext(), "잘못된 요청입니다", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<BaseResponse> call, Throwable t) {
+                            Log.d("test", "실패: " + t.getMessage());
+
+                            Toast.makeText(getApplicationContext(), "네트워크 문제가 발생했습니다", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }

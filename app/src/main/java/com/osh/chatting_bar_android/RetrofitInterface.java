@@ -62,6 +62,9 @@ public interface RetrofitInterface {
     @PATCH("/api/chatroom?roomId=&userId=")
     Call<BaseResponse> roomIce(@Query("roomId") Long roomId, @Query("userId") int userId);
 
+    @PATCH("/api/chatroom/close")
+    Call<BaseResponse> roomClose(@Body LongRequest id);
+
     @GET("/api/chatroom")
     Call<ChatRoomResponse> getAllRoom();
 
