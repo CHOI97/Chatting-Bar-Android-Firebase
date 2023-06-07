@@ -5,6 +5,9 @@ public class Guest {
     public String userName;
     public Boolean status;
 
+    //Firebase 빈 생성자 추가 해야함
+    public Guest(){}
+
     public Guest(long uid,String userName,Boolean status){
         this.uid = uid;
         this.userName = userName;

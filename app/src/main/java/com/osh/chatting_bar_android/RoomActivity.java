@@ -1,13 +1,12 @@
 package com.osh.chatting_bar_android;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,48 +16,62 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ktx.Firebase;
 import com.osh.chatting_bar_android.data_model.BaseResponse;
 import com.osh.chatting_bar_android.data_model.ChatRoomInformation;
 import com.osh.chatting_bar_android.data_model.OneCharRoomResponse;
-import com.osh.chatting_bar_android.data_model.UserResponse;
 import com.osh.chatting_bar_android.firebase.ChatCallback;
 import com.osh.chatting_bar_android.firebase.DatabaseManager;
-import com.osh.chatting_bar_android.firebase.data.ChatRoom;
+import com.osh.chatting_bar_android.firebase.data.ChatRoomData;
 import com.osh.chatting_bar_android.firebase.data.Message;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
-import kotlinx.coroutines.CoroutineScope;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
 public class RoomActivity extends AppCompatActivity {
+
+    TextView title;
+    EditText chatInput;
     private MessagesRecyclerViewAdapter MessagesRecyclerViewAdapter;
     private RoomMemberRecyclerViewAdapter RoomMemberRecyclerViewAdapter;
     ChatRoomInformation information;
     Boolean isHost;
+    SharedPreferences pref;
     public DatabaseManager db;
-
+    public DatabaseReference chatDB;
     private String userRole;
     private long roomId;
+
+    private User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         userRole = "Host";
-
+        user = User.getInstance();
+        pref = User.getInstance().getPreferences();
         db = new DatabaseManager();
         isHost = Boolean.TRUE;
-
+        title = findViewById(R.id.room_name);
+        chatInput = findViewById(R.id.chat_input);
         Intent intent = getIntent();
         roomId = intent.getLongExtra("RoomID", 0);
+        Log.d("roomId",Long.toString(roomId));
 
         if (roomId != 0) {
             // 방 조회 부분
@@ -70,8 +83,8 @@ public class RoomActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         Log.d("test", response.body().toString() + ", code: " + response.code());
                         information = response.body().getInformation();
-                        TextView title = findViewById(R.id.room_name);
                         title.setText(information.getName());
+                        sendNotify(User.getInstance().getNickname());
                         initRoom();
                     } else {
                         try {
@@ -91,6 +104,7 @@ public class RoomActivity extends AppCompatActivity {
                 }
             });
         }
+        observeChat();
         InitMemberList();
         InitBtn();
         //방에 있는 유저 조회
@@ -105,16 +119,19 @@ public class RoomActivity extends AppCompatActivity {
     }
     public void initRoom(){
         // 룸 ID로 룸조회하기
-        db.inquiryRoom(roomId, new ChatCallback<ChatRoom>() {
+        db.inquiryRoom(roomId, new ChatCallback<ChatRoomData>() {
+
             @Override
-            public void onCallback(ChatRoom data) {
+            public void onCallback(ChatRoomData data) {
                 // 호스트 확인 메소드
-                if(data.chatRoomData.masterId == information.getHostId()){
+                Log.d("information",Long.toString(information.getHostId()));
+                Log.d("datasnapshot data",Long.toString(data.masterId));
+                if(data.masterId == information.getHostId()){
                     HostInit();
                 }else{
                     GuestInit();
                 }
-                InitChatting(data.chatList);
+                InitChatting();
             }
         });
 
@@ -141,14 +158,67 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
     }
+    public void observeChat(){
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d("firebase", "onChildAdded:" + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        db.mDatabaseRef.child("chat").child("roomId").child(Long.toString(roomId)).addChildEventListener(childEventListener);
+    }
+    protected void sendMessage(){
+        long uid = user.getId();
+        String userName = user.getNickname();
+        String message = chatInput.getText().toString();
+        Log.d("sendmessage",Long.toString(roomId));
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        db.sendMessage(roomId,new Message(uid,userName,dateFormat.format(date),message));
+        chatInput.setText("");
+    }
+    protected void sendNotify(String userName){
+        long uid = 0;
+        String username = "notify";
+        String message = userName+"님이 입장하셨습니다";
+        Log.d("sendmessage",Long.toString(roomId));
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        db.sendMessage(roomId,new Message(uid,userName,dateFormat.format(date),message));
+        chatInput.setText("");
+    }
 
 //    채팅 리사이클러뷰 불러오기
-    protected void InitChatting(ArrayList<Message> chatList){
-        RecyclerView recyclerView = findViewById(R.id.chatting_recyclerView);
-        MessagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(this, chatList);
-        recyclerView.setAdapter(MessagesRecyclerViewAdapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    protected void InitChatting(){
+        db.inquiryChatList(roomId, new ChatCallback<ArrayList<Message>>() {
+            @Override
+            public void onCallback(ArrayList<Message> data) {
+                RecyclerView recyclerView = findViewById(R.id.chatting_recyclerView);
+                MessagesRecyclerViewAdapter = new MessagesRecyclerViewAdapter(RoomActivity.this, data);
+                recyclerView.setAdapter(MessagesRecyclerViewAdapter);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(new LinearLayoutManager(RoomActivity.this));
+            }
+        });
+
 
     }
 
@@ -245,7 +315,7 @@ public class RoomActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"내용을 입력해주세요", Toast.LENGTH_LONG).show();
                 }
                 else {
-
+                    sendMessage();
                 }
             }
         });

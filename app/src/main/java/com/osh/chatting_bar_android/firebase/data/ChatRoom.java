@@ -13,6 +13,8 @@ public class ChatRoom {
         this.chatRoomData = chatRoomData;
         this.guestList = guestList;
     }
+    //Firebase 빈 생성자 추가 해야함
+    public ChatRoom(){}
 
     public ArrayList<Message> getChatList() {
         return chatList;
