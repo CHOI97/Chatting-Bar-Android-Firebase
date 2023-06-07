@@ -80,7 +80,7 @@ public interface RetrofitInterface {
     @POST("api/users/follow/{id}")
     Call<BaseResponse> followStart(@Path("id") String id);
 
-    @PATCH("api/users/follow/{id}")
+    @DELETE("api/users/follow/{id}")
     Call<BaseResponse> followEnd(@Path("id") String id);
 
     @GET("api/users/following")
